@@ -1,7 +1,5 @@
 package com.github.rowanhill.boneidle;
 
-import com.github.rowanhill.boneidle.LazyFactory;
-import com.github.rowanhill.boneidle.LazyLoadWith;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +49,7 @@ public class LazyFactoryTest {
         proxy.getLazyLoadedString();
 
         // then
-        assertThat(original.lazyLoadCount).isEqualTo(1);
+        assertThat(original.lazyLoadStringCount).isEqualTo(1);
     }
 
     @Test
@@ -61,14 +59,42 @@ public class LazyFactoryTest {
         proxy.getOtherLazyLoadedString();
 
         // then
-        assertThat(original.lazyLoadCount).isEqualTo(1);
+        assertThat(original.lazyLoadStringCount).isEqualTo(1);
+    }
+
+    @Test
+    public void secondLoaderMethodNotInvokedForUnassociatedMethods() {
+        // when
+        proxy.getLazyLoadedString();
+
+        // then
+        assertThat(original.lazyLoadIntegerCount).isEqualTo(0);
+    }
+
+    @Test
+    public void multipleLoaderMethodsInvokedOnceEachByMultipleUnassociatedLazyLoadedMethodInvocations() {
+        // when
+        proxy.getLazyLoadedString();
+        proxy.getLazyLoadedString();
+        proxy.getLazyLoadedInteger();
+        proxy.getLazyLoadedInteger();
+
+        // then
+        assertThat(original.lazyLoadStringCount).isEqualTo(1);
+        assertThat(original.lazyLoadIntegerCount).isEqualTo(1);
     }
 
     static class MyClass {
         public static final String LAZY_LOADED_STRING_CONTENT = "This string was loaded lazily";
+        public static final Integer LAZY_LOADED_INTEGER_CONTENT = 123;
+
         private String lazyLoadedString = null;
         private String otherLazyLoadedString = null;
-        private int lazyLoadCount = 0;
+
+        private Integer lazyLoadedInteger = null;
+
+        private int lazyLoadStringCount = 0;
+        private int lazyLoadIntegerCount = 0;
 
         String unannotatedMethod() {
             return "Unannotated methods should not be affected by proxying";
@@ -84,11 +110,22 @@ public class LazyFactoryTest {
             return otherLazyLoadedString;
         }
 
+        @LazyLoadWith("loadLazyLoadedInteger")
+        Integer getLazyLoadedInteger() {
+            return lazyLoadedInteger;
+        }
+
         @SuppressWarnings("UnusedDeclaration")
         private void loadLazyLoadedString() {
-            lazyLoadCount++;
+            lazyLoadStringCount++;
             lazyLoadedString = LAZY_LOADED_STRING_CONTENT;
             otherLazyLoadedString = "Other lazy loaded string";
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        private void loadLazyLoadedInteger() {
+            lazyLoadIntegerCount++;
+            lazyLoadedInteger = LAZY_LOADED_INTEGER_CONTENT;
         }
     }
 }
