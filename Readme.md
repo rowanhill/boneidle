@@ -94,5 +94,8 @@ Ways in which boneidle could be even better include:
  * If _any_ loader specified (by a new annotation?) has been invoked
  * If the field backing the bean getter is not null (for bean getters only, obviously)
 * Support passing a `Class` to `LazyFactory` instead / as well an instance
+* Support `@LazyLoadWith` on the class as well as methods, as a default
+ * ...plus an opt-out annotation
+ * ...and perhaps different inclusion filters (e.g. all methods, only public methods, only getter methods)
 * Publish to Maven Central
 * Build on Travis (or similar)
