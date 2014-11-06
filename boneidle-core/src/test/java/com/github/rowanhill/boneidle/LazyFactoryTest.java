@@ -84,6 +84,15 @@ public class LazyFactoryTest {
         assertThat(original.lazyLoadIntegerCount).isEqualTo(1);
     }
 
+    @Test
+    public void proxiesForClassesWithNonTrivialConstructorsCanBeMade() {
+        // given
+        AwkwardConstructorClass awkwardOriginal = new AwkwardConstructorClass("dummy");
+
+        // when
+        LazyFactory.proxy(awkwardOriginal);
+    }
+
     static class MyClass {
         public static final String LAZY_LOADED_STRING_CONTENT = "This string was loaded lazily";
         public static final Integer LAZY_LOADED_INTEGER_CONTENT = 123;
@@ -127,5 +136,9 @@ public class LazyFactoryTest {
             lazyLoadIntegerCount++;
             lazyLoadedInteger = LAZY_LOADED_INTEGER_CONTENT;
         }
+    }
+
+    static class AwkwardConstructorClass {
+        private AwkwardConstructorClass(String dummy) {}
     }
 }

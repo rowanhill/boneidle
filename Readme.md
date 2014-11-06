@@ -20,6 +20,13 @@ public class DataClass {
     private String description;
 
     /*
+     * Constructors that take arguments, or are even inaccessible, are fine
+     */
+    private DataClass(int id) {
+        this.id = id;
+    }
+
+    /*
      * Un-annotated methods are left alone, so you can mix lazy and eager loaded data
      */
     public int getId() {
@@ -73,7 +80,7 @@ Restrictions
 ------------
 Since boneidle is powered by cglib proxies, there are one or two restrictions:
 
-* The annotated class must have an accessible null constructor
+* The annotated class must not be static
 * The annotated class must not be final
 * Lazy-loaded data must always be retrieved through the annotated methods, even within the annotated class; accessing
 the fields directly won't trigger any lazy loading
@@ -87,6 +94,5 @@ Ways in which boneidle could be even better include:
  * If _any_ loader specified (by a new annotation?) has been invoked
  * If the field backing the bean getter is not null (for bean getters only, obviously)
 * Support passing a `Class` to `LazyFactory` instead / as well an instance
-* Support constructors other than the null constructor, if possible?
 * Publish to Maven Central
 * Build on Travis (or similar)

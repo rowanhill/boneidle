@@ -1,8 +1,10 @@
 package com.github.rowanhill.boneidle;
 
+import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.objenesis.ObjenesisHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,10 +16,16 @@ public class LazyFactory {
         Enhancer enhancer = new Enhancer();
 
         enhancer.setSuperclass(original.getClass());
-        enhancer.setCallback(new LazyLoadWithMethodInterceptor<T>(original));
+        enhancer.setCallbackType(LazyLoadWithMethodInterceptor.class);
 
         //noinspection unchecked
-        return (T) enhancer.create();
+        return createProxyInstanceWithoutCallingConstructor((Class<T>) enhancer.createClass(), original);
+    }
+
+    private static <T> T createProxyInstanceWithoutCallingConstructor(Class<T> proxyClass, T original) {
+        LazyLoadWithMethodInterceptor<T> interceptor = new LazyLoadWithMethodInterceptor<T>(original);
+        Enhancer.registerCallbacks(proxyClass, new Callback[] { interceptor });
+        return ObjenesisHelper.newInstance(proxyClass);
     }
 
     private static final class LazyLoadWithMethodInterceptor<T> implements MethodInterceptor {
