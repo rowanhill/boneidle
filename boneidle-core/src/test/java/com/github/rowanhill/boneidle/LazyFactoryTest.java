@@ -93,7 +93,7 @@ public class LazyFactoryTest {
         LazyFactory.proxy(awkwardOriginal);
     }
 
-    static class MyClass {
+    private static class MyClass {
         public static final String LAZY_LOADED_STRING_CONTENT = "This string was loaded lazily";
         public static final Integer LAZY_LOADED_INTEGER_CONTENT = 123;
 
@@ -138,7 +138,7 @@ public class LazyFactoryTest {
         }
     }
 
-    static class AwkwardConstructorClass {
-        private AwkwardConstructorClass(String dummy) {}
+    private static class AwkwardConstructorClass {
+        private AwkwardConstructorClass(@SuppressWarnings("UnusedParameters") String dummy) {}
     }
 }
