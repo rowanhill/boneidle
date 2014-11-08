@@ -9,8 +9,8 @@ Don't worry, boneidle has got you covered with these three easy steps:
 2. Annotate the lazy-loaded getters with `@LazyLoadWith` (or any other method you want to trigger the loader)
 3. Create your lazy-loading proxy with `LazyFactory.proxy()`
 
-Example
--------
+Examples
+--------
 Suppose you have a data holder class that looks like:
 
 ```java
@@ -76,6 +76,28 @@ dataClass.getName();
 String description = dataClass.tellMeAboutIt();
 ```
 
+If all your methods are loaded by the same method, you can put the `@LazyLoadWith` annotation on the class. Applying
+the `@LazyLoadWith` annotation to a method on a type annotated at the class level will override the class loader:
+
+```java
+@LazyLoadWith("loadDataForClass")
+class DataClassWithDefaultLoader {
+    private String name;
+    private String description;
+
+    /* This will be lazy loaded using the class's default loader */
+    public String getName() { ... }
+
+    /* This will be lazy loaded using the loader specified on the method */
+    @LazyLoadWith("loadDataForClass")
+    public String getDescription() { ... }
+
+    private void loadDataForClass() { ... }
+
+    private void loadDataForDescription() { ... }
+}
+```
+
 Restrictions
 ------------
 Since boneidle is powered by cglib proxies, there are one or two restrictions:
@@ -94,8 +116,8 @@ Ways in which boneidle could be even better include:
  * If _any_ loader specified (by a new annotation?) has been invoked
  * If the field backing the bean getter is not null (for bean getters only, obviously)
 * Support passing a `Class` to `LazyFactory` instead / as well an instance
-* Support `@LazyLoadWith` on the class as well as methods, as a default
- * ...plus an opt-out annotation
- * ...and perhaps different inclusion filters (e.g. all methods, only public methods, only getter methods)
+* Extend support for `@LazyLoadWith` on the class:
+ * Add an opt-out annotation
+ * And perhaps different inclusion filters (e.g. all methods, only public methods, only getter methods)
 * Publish to Maven Central
 * Build on Travis (or similar)

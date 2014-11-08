@@ -40,10 +40,49 @@ public class LoaderMethodResolverTest {
         assertThat(loaderMethod.getName()).isEqualTo("load");
     }
 
+    @Test
+    public void unannotatedMethodOnAnnotatedClassHasClassDefaultLoader() throws Exception {
+        // given
+        Method unannotatedMethod = DefaultedClass.class.getDeclaredMethod("getUnannotatedString");
+
+        // when
+        Method loaderMethod = resolver.getLoaderFor(unannotatedMethod);
+
+        // then
+        assertThat(loaderMethod).isNotNull();
+        assertThat(loaderMethod.getName()).isEqualTo("defaultLoad");
+    }
+
+    @Test
+    public void annotatedMethodOnAnnotatedClassUsesMethodLoader() throws Exception {
+        // given
+        Method unannotatedMethod = DefaultedClass.class.getDeclaredMethod("getAnnotatedString");
+
+        // when
+        Method loaderMethod = resolver.getLoaderFor(unannotatedMethod);
+
+        // then
+        assertThat(loaderMethod).isNotNull();
+        assertThat(loaderMethod.getName()).isEqualTo("load");
+    }
+
     private static class SimpleClass {
         String getUnannotatedString() { return null; }
 
         @LazyLoadWith("load") String getAnnotatedString() { return null; }
+
+        @SuppressWarnings("UnusedDeclaration")
+        private void load() {}
+    }
+
+    @LazyLoadWith("defaultLoad")
+    private static class DefaultedClass {
+        String getUnannotatedString() { return null; }
+
+        @LazyLoadWith("load") String getAnnotatedString() { return null; }
+
+        @SuppressWarnings("UnusedDeclaration")
+        private void defaultLoad() {}
 
         @SuppressWarnings("UnusedDeclaration")
         private void load() {}
