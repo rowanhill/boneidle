@@ -12,7 +12,35 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class LazyFactory {
+    private static LazyFactory instance = null;
+
+    private final LoaderMethodResolver loaderMethodResolver;
+
     public static <T> T proxy(final T original) {
+        return getFactory().createProxy(original);
+    }
+
+    /**
+     * Get a lazy-loaded singleton instance of the factory.
+     *
+     * This is for two reasons:
+     *   a) It allows us to inject dependencies to the factory (with this method as the top level 'container')
+     *   b) Lazily loading the lazy-loader factory is pleasingly meta.
+     */
+    private static LazyFactory getFactory() {
+        if (instance == null) {
+            instance = new LazyFactory(
+                    new LoaderMethodResolver()
+            );
+        }
+        return instance;
+    }
+
+    private LazyFactory(LoaderMethodResolver loaderMethodResolver) {
+        this.loaderMethodResolver = loaderMethodResolver;
+    }
+
+    private <T> T createProxy(final T original) {
         Enhancer enhancer = new Enhancer();
 
         enhancer.setSuperclass(original.getClass());
@@ -22,17 +50,20 @@ public class LazyFactory {
         return createProxyInstanceWithoutCallingConstructor((Class<T>) enhancer.createClass(), original);
     }
 
-    private static <T> T createProxyInstanceWithoutCallingConstructor(Class<T> proxyClass, T original) {
-        LazyLoadWithMethodInterceptor<T> interceptor = new LazyLoadWithMethodInterceptor<T>(original);
+    private <T> T createProxyInstanceWithoutCallingConstructor(Class<T> proxyClass, T original) {
+        LazyLoadWithMethodInterceptor<T> interceptor =
+                new LazyLoadWithMethodInterceptor<T>(loaderMethodResolver, original);
         Enhancer.registerCallbacks(proxyClass, new Callback[] { interceptor });
         return ObjenesisHelper.newInstance(proxyClass);
     }
 
     private static final class LazyLoadWithMethodInterceptor<T> implements MethodInterceptor {
+        private final LoaderMethodResolver loaderMethodResolver;
         private final T original;
         private final Set<String> calledLoaders = new HashSet<String>();
 
-        private LazyLoadWithMethodInterceptor(T original) {
+        private LazyLoadWithMethodInterceptor(LoaderMethodResolver loaderMethodResolver, T original) {
+            this.loaderMethodResolver = loaderMethodResolver;
             this.original = original;
         }
 
@@ -40,32 +71,29 @@ public class LazyFactory {
         public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy)
                 throws Throwable
         {
-            boolean isLazyLoaded = method.isAnnotationPresent(LazyLoadWith.class);
+            Method loaderMethod = loaderMethodResolver.getLoaderFor(method);
 
-            if (isLazyLoaded) {
-                LazyLoadWith lazyLoadWith = method.getAnnotation(LazyLoadWith.class);
-                String loaderMethodName = lazyLoadWith.value();
-                callLazyLoaderIfNeeded(loaderMethodName);
+            if (loaderMethod != null) {
+                callLazyLoaderIfNeeded(loaderMethod);
             }
 
             return methodProxy.invoke(original, args);
         }
 
-        private void callLazyLoaderIfNeeded(String loaderMethodName)
+        private void callLazyLoaderIfNeeded(Method loaderMethod)
                 throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
         {
-            if (!calledLoaders.contains(loaderMethodName)) {
-                callLazyLoader(loaderMethodName);
+            if (!calledLoaders.contains(loaderMethod.getName())) {
+                callLazyLoader(loaderMethod);
             }
         }
 
-        private void callLazyLoader(String loaderMethodName)
+        private void callLazyLoader(Method loaderMethod)
                 throws NoSuchMethodException, IllegalAccessException, InvocationTargetException
         {
-            Method loaderMethod = original.getClass().getDeclaredMethod(loaderMethodName);
             loaderMethod.setAccessible(true);
             loaderMethod.invoke(original);
-            calledLoaders.add(loaderMethodName);
+            calledLoaders.add(loaderMethod.getName());
         }
     }
 }
