@@ -61,7 +61,9 @@ public class DataClass {
 You could then use an instance of it like so:
 
 ```java
-DataClass dataClass = LazyFactory.proxy(new DataClass());
+// For classes with declared null constructors, the LazyFactory.proxy(SimpleClass.class) override can be used. Classes
+// with constructors that take parameters must pass an original object to lazy-load, however.
+DataClass dataClass = LazyFactory.proxy(new DataClass(123));
 
 // No lazy loading done here
 int id = dataClass.getId();
@@ -120,7 +122,6 @@ Ways in which boneidle could be even better include:
  * If the `@LazyLoadWith` loader has been invoked once
  * If _any_ loader specified (by a new annotation?) has been invoked
  * If the field backing the bean getter is not null (for bean getters only, obviously)
-* Support passing a `Class` to `LazyFactory` instead / as well an instance
 * Extend support for `@LazyLoadWith` on the class:
  * Perhaps add different inclusion filters (e.g. all methods, only public methods, only getter methods)
 * Publish to Maven Central

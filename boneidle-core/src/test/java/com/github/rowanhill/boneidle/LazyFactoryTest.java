@@ -1,6 +1,7 @@
 package com.github.rowanhill.boneidle;
 
 import com.github.rowanhill.boneidle.exception.CannotCreateLazyProxyRuntimeException;
+import com.github.rowanhill.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -113,6 +114,24 @@ public class LazyFactoryTest {
 
         // when
         LazyFactory.proxy(finalClass);
+    }
+
+    @Test
+    public void classesWithAccessibleNullConstructorsCanBeProxiedBySupplyingTheClassNotAnInstance() {
+        // when
+        @SuppressWarnings("UnusedDeclaration") MyClass proxyFromClass = LazyFactory.proxy(MyClass.class);
+    }
+
+    @Test
+    public void makingProxiesForClassesWithOnlyParameterisedConstructorsThrowsHelpfulException() {
+        // expect
+        expectedException
+                .expect(CannotCreateObjectToProxyRuntimeException.class)
+                .hasMessageContaining("Could not create object to proxy")
+                .hasMessageContaining("AwkwardConstructorClass");
+
+        // when
+        LazyFactory.proxy(AwkwardConstructorClass.class);
     }
 
     private static class MyClass {

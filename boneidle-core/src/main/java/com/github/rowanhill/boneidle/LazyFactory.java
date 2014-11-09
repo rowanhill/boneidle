@@ -1,9 +1,14 @@
 package com.github.rowanhill.boneidle;
 
 import com.github.rowanhill.boneidle.exception.CannotCreateLazyProxyRuntimeException;
+import com.github.rowanhill.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.objenesis.ObjenesisHelper;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.NoSuchElementException;
 
 public class LazyFactory {
     private static LazyFactory instance = null;
@@ -21,6 +26,23 @@ public class LazyFactory {
      */
     public static <T> T proxy(final T original) {
         return getFactory().createProxy(original);
+    }
+
+    /**
+     * Convenience method to create a proxy for a given class.
+     *
+     * @see LazyFactory#proxy(Object)
+     */
+    public static <T> T proxy(final Class<T> originalClass)
+    {
+        try {
+            Constructor<T> constructor = originalClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T original = constructor.newInstance();
+            return proxy(original);
+        } catch (ReflectiveOperationException e) {
+            throw CannotCreateObjectToProxyRuntimeException.create(originalClass, e);
+        }
     }
 
     /**
