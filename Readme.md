@@ -89,7 +89,7 @@ class DataClassWithDefaultLoader {
     public String getName() { ... }
 
     /* This will be lazy loaded using the loader specified on the method */
-    @LazyLoadWith("loadDataForClass")
+    @LazyLoadWith("loadDataForDescription")
     public String getDescription() { ... }
 
     private void loadDataForClass() { ... }
