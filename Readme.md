@@ -106,7 +106,7 @@ class DataClassWithDefaultLoader {
 
 Restrictions
 ------------
-Since boneidle is powered by cglib proxies, there are one or two restrictions:
+Since boneidle is powered by CGLIB proxies, there are one or two restrictions:
 
 * The annotated class must not be final
 * Lazy-loaded data must always be retrieved through the annotated methods, even within the annotated class; accessing

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * CGLib interceptor that invokes defined lazy loaded methods before invoking the target method, if necessary
+ * CGLIB interceptor that invokes defined lazy loaded methods before invoking the target method, if necessary
  *
  * @param <T> The type of the object being proxied
  */
