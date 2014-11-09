@@ -6,7 +6,7 @@ Got a bunch of data you want to load in to your class just once, but don't want 
 Don't worry, boneidle has got you covered with these three easy steps:
 
 1. Write a method to do the loading
-2. Annotate the lazy-loaded getters with `@LazyLoadWith` (or any other method you want to trigger the loader)
+2. Annotate the lazy-loaded getters with `@LazyLoadWith` (or any other method you want to trigger the loader). Annotate the class to make all methods lazily-loaded by default.
 3. Create your lazy-loading proxy with `LazyFactory.proxy()`
 
 Examples
