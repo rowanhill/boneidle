@@ -34,8 +34,8 @@ public class DataClass {
     }
 
     /*
-     * Declare which method to call in order to load the data backing this method using
-     * @LazyLoadWith
+     * Declare which method to call in order to load the data backing this method
+     * using @LazyLoadWith
      */
     @LazyLoadWith("loadData")
     public String getName() {
@@ -64,8 +64,9 @@ You could then use an instance of it like so:
 
 ```java
 // For classes with declared null constructors, the convenience override
-// LazyFactory.proxy(SimpleClass.class) override can be used. Classes with constructors
-// that take parameters must pass an original object to lazy-load, however.
+// LazyFactory.proxy(SimpleClass.class) override can be used. Classes with
+// constructors that take parameters must pass an original object to lazy-load,
+// however.
 DataClass dataClass = LazyFactory.proxy(new DataClass(123));
 
 // No lazy loading done here
