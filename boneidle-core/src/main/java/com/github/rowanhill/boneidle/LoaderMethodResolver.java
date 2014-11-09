@@ -5,7 +5,7 @@ import com.github.rowanhill.boneidle.exception.CannotInvokeLazyLoaderRuntimeExce
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
-public class LoaderMethodResolver {
+class LoaderMethodResolver {
     /**
      * Finds the loader method for a given target method
      *
@@ -13,7 +13,7 @@ public class LoaderMethodResolver {
      * @return The loader method for the given targetMethod, or null if no loader method is defined.
      * @throws CannotInvokeLazyLoaderRuntimeException Thrown if the loader method is missing or parameterised
      */
-    public Method getLoaderFor(Method targetMethod) {
+    Method getLoaderFor(Method targetMethod) {
         LazyLoadWith lazyLoadWith = getLoaderAnnotation(targetMethod);
 
         if (lazyLoadWith == null) {
