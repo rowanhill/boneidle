@@ -11,6 +11,10 @@
 
     <artifactId>boneidle-core</artifactId>
 
+    <name>boneidle core</name>
+    <description>The core boneidle library, for creating annotation-driven lazy-loading proxies of objects.</description>
+    <url>https://github.com/rowanhill/boneidle</url>
+
     <dependencies>
         <dependency>
             <groupId>boneidle</groupId>

@@ -11,5 +11,11 @@
 
     <artifactId>boneidle-annotations</artifactId>
 
+    <name>boneidle annotations</name>
+    <description>
+        The boneidle annotations, for defining lazy-loading on proxies, without including the heavier-weight core
+        library.
+    </description>
+    <url>https://github.com/rowanhill/boneidle</url>
 
 </project>
