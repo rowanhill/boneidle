@@ -26,7 +26,8 @@ public class LazyFactoryTest {
 
     @Test
     public void lazyProxiesAreAssignableToProxiedType() {
-        // (This is a bit redundant, given the compiler is happy with the above assignment)
+        // (This is a bit redundant, given the compiler is happy with the assignment in the setUp, but is here to be
+        // explicit)
         assertThat(proxy).isInstanceOf(MyClass.class);
     }
 
