@@ -40,5 +40,11 @@
             <version>1.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.wkr</groupId>
+            <artifactId>fluent-exception-rule</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

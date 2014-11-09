@@ -108,7 +108,6 @@ Restrictions
 ------------
 Since boneidle is powered by cglib proxies, there are one or two restrictions:
 
-* The annotated class must not be static
 * The annotated class must not be final
 * Lazy-loaded data must always be retrieved through the annotated methods, even within the annotated class; accessing
 the fields directly won't trigger any lazy loading
@@ -117,10 +116,6 @@ Potential future improvements
 -----------------------------
 Ways in which boneidle could be even better include:
 
-* Provide nice error messages on mis-use
- * Helpful exceptions for specifying non-existent loader method
- * Helpful exceptions for specifying loader method that has parameters
- * Possibly wrap the cglib exceptions for final classes?
 * Smarter / configurable strategies for deciding when data needs to be loaded. For example:
  * If the `@LazyLoadWith` loader has been invoked once
  * If _any_ loader specified (by a new annotation?) has been invoked

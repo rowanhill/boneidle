@@ -1,5 +1,6 @@
 package com.github.rowanhill.boneidle;
 
+import com.github.rowanhill.boneidle.exception.CannotCreateLazyProxyRuntimeException;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.objenesis.ObjenesisHelper;
@@ -15,6 +16,8 @@ public class LazyFactory {
      * @param original The object to proxy
      * @param <T> The type of the object to proxy
      * @return A lazy-loading proxy wrapping original
+     *
+     * @throws CannotCreateLazyProxyRuntimeException if the object to proxy cannot be proxied by CGLIB
      */
     public static <T> T proxy(final T original) {
         return getFactory().createProxy(original);
@@ -46,8 +49,18 @@ public class LazyFactory {
         enhancer.setSuperclass(original.getClass());
         enhancer.setCallbackType(LazyLoadWithMethodInterceptor.class);
 
-        //noinspection unchecked
-        return createProxyInstanceWithoutCallingConstructor((Class<T>) enhancer.createClass(), original);
+        Class<T> proxyClass = tryCreateClass(enhancer, original);
+
+        return createProxyInstanceWithoutCallingConstructor(proxyClass, original);
+    }
+
+    private <T> Class<T> tryCreateClass(Enhancer enhancer, T original) {
+        try {
+            //noinspection unchecked
+            return (Class<T>)enhancer.createClass();
+        } catch (IllegalArgumentException e) {
+            throw CannotCreateLazyProxyRuntimeException.create(original, e);
+        }
     }
 
     private <T> T createProxyInstanceWithoutCallingConstructor(Class<T> proxyClass, T original) {

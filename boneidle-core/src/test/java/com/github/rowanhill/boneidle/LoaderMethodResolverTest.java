@@ -1,13 +1,19 @@
 package com.github.rowanhill.boneidle;
 
+import com.github.rowanhill.boneidle.exception.CannotInvokeLazyLoaderRuntimeException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import pl.wkr.fluentrule.api.FluentExpectedException;
 
 import java.lang.reflect.Method;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoaderMethodResolverTest {
+    @Rule
+    public final FluentExpectedException expectedException = FluentExpectedException.none();
+
     private LoaderMethodResolver resolver;
 
     @Before
@@ -78,6 +84,36 @@ public class LoaderMethodResolverTest {
         assertThat(loaderMethod).isNull();
     }
 
+    @Test
+    public void specifyingMissingLoaderMethodThrowsHelpfulException() throws Exception {
+        // given
+        Method missingLoaderMethod = MisconfiguredClass.class.getDeclaredMethod("getMissingLoaderString");
+
+        // expect
+        expectedException
+                .expect(CannotInvokeLazyLoaderRuntimeException.class)
+                .hasMessageContaining("missingLoader")
+                .hasMessageContaining("Ensure it exists and takes no parameters");
+
+        // when
+        resolver.getLoaderFor(missingLoaderMethod);
+    }
+
+    @Test
+    public void specifyingParameterisedLoaderMethodThrowsHelpfulException() throws Exception {
+        // given
+        Method missingLoaderMethod = MisconfiguredClass.class.getDeclaredMethod("getParameterisedLoaderString");
+
+        // expect
+        expectedException
+                .expect(CannotInvokeLazyLoaderRuntimeException.class)
+                .hasMessageContaining("loaderWithParameters")
+                .hasMessageContaining("Ensure it exists and takes no parameters");
+
+        // when
+        resolver.getLoaderFor(missingLoaderMethod);
+    }
+
     private static class SimpleClass {
         String getUnannotatedString() { return null; }
 
@@ -100,5 +136,14 @@ public class LoaderMethodResolverTest {
 
         @SuppressWarnings("UnusedDeclaration")
         private void load() {}
+    }
+
+    private static class MisconfiguredClass {
+        @LazyLoadWith("missingLoader") String getMissingLoaderString() { return null; }
+
+        @LazyLoadWith("loaderWithParameters") String getParameterisedLoaderString() { return null; }
+
+        @SuppressWarnings("UnusedDeclaration")
+        private void loaderWithParameters(String dummy) {}
     }
 }
