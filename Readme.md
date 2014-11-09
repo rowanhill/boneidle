@@ -77,13 +77,19 @@ String description = dataClass.tellMeAboutIt();
 ```
 
 If all your methods are loaded by the same method, you can put the `@LazyLoadWith` annotation on the class. Applying
-the `@LazyLoadWith` annotation to a method on a type annotated at the class level will override the class loader:
+the `@LazyLoadWith` annotation to a method on a type annotated at the class level will override the class loader, whilst
+applying the `@ExcludeFromLazyLoading` will prevent any lazy-loader from being called for that method:
 
 ```java
 @LazyLoadWith("loadDataForClass")
 class DataClassWithDefaultLoader {
+    private int id;
     private String name;
     private String description;
+
+    /* This will not be lazy loaded - the method will be invoked as written */
+    @ExcludeFromLazyLoading
+    public int getId() { ... }
 
     /* This will be lazy loaded using the class's default loader */
     public String getName() { ... }
@@ -121,7 +127,6 @@ Ways in which boneidle could be even better include:
  * If the field backing the bean getter is not null (for bean getters only, obviously)
 * Support passing a `Class` to `LazyFactory` instead / as well an instance
 * Extend support for `@LazyLoadWith` on the class:
- * Add an opt-out annotation
- * And perhaps different inclusion filters (e.g. all methods, only public methods, only getter methods)
+ * Perhaps add different inclusion filters (e.g. all methods, only public methods, only getter methods)
 * Publish to Maven Central
 * Build on Travis (or similar)

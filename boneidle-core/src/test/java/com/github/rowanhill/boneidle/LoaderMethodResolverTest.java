@@ -66,6 +66,18 @@ public class LoaderMethodResolverTest {
         assertThat(loaderMethod.getName()).isEqualTo("load");
     }
 
+    @Test
+    public void excludedMethodOnDefaultedClassHasNoLoader() throws Exception {
+        // given
+        Method excludedMethod = DefaultedClass.class.getDeclaredMethod("getExcludedString");
+
+        // when
+        Method loaderMethod = resolver.getLoaderFor(excludedMethod);
+
+        // then
+        assertThat(loaderMethod).isNull();
+    }
+
     private static class SimpleClass {
         String getUnannotatedString() { return null; }
 
@@ -80,6 +92,8 @@ public class LoaderMethodResolverTest {
         String getUnannotatedString() { return null; }
 
         @LazyLoadWith("load") String getAnnotatedString() { return null; }
+
+        @ExcludeFromLazyLoading String getExcludedString() { return null; }
 
         @SuppressWarnings("UnusedDeclaration")
         private void defaultLoad() {}

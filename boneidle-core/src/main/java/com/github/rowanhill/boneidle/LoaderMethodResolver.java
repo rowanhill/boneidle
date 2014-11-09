@@ -16,6 +16,10 @@ public class LoaderMethodResolver {
     }
 
     private LazyLoadWith getLoaderAnnotation(Method targetMethod) {
+        if (targetMethod.isAnnotationPresent(ExcludeFromLazyLoading.class)) {
+            return null;
+        }
+
         LazyLoadWith annotation = getMethodAnnotation(targetMethod);
         if (annotation != null) {
             return annotation;
