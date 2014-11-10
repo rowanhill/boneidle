@@ -1,4 +1,4 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;

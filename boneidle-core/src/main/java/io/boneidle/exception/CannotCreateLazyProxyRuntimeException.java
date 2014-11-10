@@ -1,4 +1,4 @@
-package com.github.rowanhill.boneidle.exception;
+package io.boneidle.exception;
 
 public class CannotCreateLazyProxyRuntimeException extends LazyLoadingMisconfigurationRuntimeException {
     private CannotCreateLazyProxyRuntimeException(String message, Throwable cause) {

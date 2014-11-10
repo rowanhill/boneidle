@@ -1,6 +1,6 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
-import com.github.rowanhill.boneidle.exception.CannotInvokeLazyLoaderRuntimeException;
+import io.boneidle.exception.CannotInvokeLazyLoaderRuntimeException;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;

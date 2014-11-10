@@ -8,7 +8,7 @@
     <description>The parent of the boneidle library. See boneidle-core and boneidle-annotations.</description>
     <url>https://github.com/rowanhill/boneidle</url>
 
-    <groupId>boneidle</groupId>
+    <groupId>io.boneidle</groupId>
     <artifactId>boneidle-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>

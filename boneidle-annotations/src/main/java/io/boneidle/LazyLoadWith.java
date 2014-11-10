@@ -1,4 +1,4 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,14 +1,12 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
-import com.github.rowanhill.boneidle.exception.CannotCreateLazyProxyRuntimeException;
-import com.github.rowanhill.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
+import io.boneidle.exception.CannotCreateLazyProxyRuntimeException;
+import io.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.Enhancer;
 import org.objenesis.ObjenesisHelper;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.NoSuchElementException;
 
 public class LazyFactory {
     private static LazyFactory instance = null;

@@ -1,6 +1,6 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
-import com.github.rowanhill.boneidle.exception.CannotInvokeLazyLoaderRuntimeException;
+import io.boneidle.exception.CannotInvokeLazyLoaderRuntimeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -129,7 +129,8 @@ public class LoaderMethodResolverTest {
 
         @LazyLoadWith("load") String getAnnotatedString() { return null; }
 
-        @ExcludeFromLazyLoading String getExcludedString() { return null; }
+        @ExcludeFromLazyLoading
+        String getExcludedString() { return null; }
 
         @SuppressWarnings("UnusedDeclaration")
         private void defaultLoad() {}

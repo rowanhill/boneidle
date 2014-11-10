@@ -1,4 +1,4 @@
-package com.github.rowanhill.boneidle.exception;
+package io.boneidle.exception;
 
 public class CannotInvokeLazyLoaderRuntimeException extends LazyLoadingMisconfigurationRuntimeException {
     private CannotInvokeLazyLoaderRuntimeException(String message, Throwable cause) {

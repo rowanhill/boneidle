@@ -1,7 +1,7 @@
-package com.github.rowanhill.boneidle;
+package io.boneidle;
 
-import com.github.rowanhill.boneidle.exception.CannotCreateLazyProxyRuntimeException;
-import com.github.rowanhill.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
+import io.boneidle.exception.CannotCreateLazyProxyRuntimeException;
+import io.boneidle.exception.CannotCreateObjectToProxyRuntimeException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
