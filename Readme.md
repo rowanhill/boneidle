@@ -12,8 +12,8 @@ Don't worry, boneidle has got you covered with these three easy steps:
 
 For more information see [boneidle.io](http://boneidle.io).
 
-## How do I install it?
-Boneidle is [available from Maven Central](http://search.maven.org/#artifactdetails%7Cio.boneidle%7Cboneidle-core%7C1.0.0%7Cjar). You can add a dependency to your project like this:
+## Where do I get it?
+[Maven Central](http://search.maven.org/#artifactdetails%7Cio.boneidle%7Cboneidle-core%7C1.0.0%7Cjar). You can add a dependency to your project like this:
 
 ```xml
 <dependency>
