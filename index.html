@@ -49,97 +49,119 @@ Don't worry, boneidle has got you covered with these three easy steps:</p>
 
 <p>Suppose you have a data holder class that looks like:</p>
 
-<div class="highlight highlight-java"><pre><span class="pl-mc"><span class="pl-s">public</span> <span class="pl-mc"><span class="pl-s">class</span> <span class="pl-entc">DataClass</span></span> <span class="pl-mc">{</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">int</span> id;</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">String</span> name;</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">String</span> description;</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * Constructors that take arguments, or are even inaccessible, are fine</span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-enf">DataClass</span>(<span class="pl-s">int</span> <span class="pl-v">id</span>) {</span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-v">this</span><span class="pl-ko">.</span>id <span class="pl-ko">=</span> id;</span></span>
-<span class="pl-mc"><span class="pl-mc">    }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * Un-annotated methods are left alone, so you can mix lazy and eager </span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * loaded data</span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">int</span> <span class="pl-enf">getId</span>() {</span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-k">return</span> id;</span></span>
-<span class="pl-mc"><span class="pl-mc">    }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * Declare which method to call in order to load the data backing this </span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * method using @LazyLoadWith</span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadData<span class="pl-pds">"</span></span>)</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">String</span> <span class="pl-enf">getName</span>() {</span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-k">return</span> name;</span></span>
-<span class="pl-mc"><span class="pl-mc">    }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * Any method can be annotated; it doesn't have to be a JavaBean getter</span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadData<span class="pl-pds">"</span></span>)</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">String</span> <span class="pl-enf">tellMeAboutIt</span>() {</span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-k">return</span> description;</span></span>
-<span class="pl-mc"><span class="pl-mc">    }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     * The loader method can be private, but must have no parameters</span></span></span>
-<span class="pl-mc"><span class="pl-mc"><span class="pl-c">     <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">void</span> <span class="pl-enf">loadData</span>() {</span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-c"><span class="pl-pdc">//</span> Do something expensive, like a big calculation or read from an</span></span></span>
-<span class="pl-mc"><span class="pl-mc">        <span class="pl-c"><span class="pl-pdc">//</span> external source</span></span></span>
-<span class="pl-mc"><span class="pl-mc">    }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span>}</span></pre></div>
+<div class="highlight highlight-java"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">DataClass</span> {
+    <span class="pl-s">private</span> <span class="pl-st">int</span> id;
+    <span class="pl-s">private</span> <span class="pl-stj">String</span> name;
+    <span class="pl-s">private</span> <span class="pl-stj">String</span> description;
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * Constructors that take arguments, or are even inaccessible, are fine</span>
+<span class="pl-c">     */</span>
+    <span class="pl-s">private</span> <span class="pl-en">DataClass</span>(<span class="pl-st">int</span> <span class="pl-v">id</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>id <span class="pl-k">=</span> id;
+    }
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * Un-annotated methods are left alone, so you can mix lazy and eager </span>
+<span class="pl-c">     * loaded data</span>
+<span class="pl-c">     */</span>
+    <span class="pl-s">public</span> <span class="pl-st">int</span> <span class="pl-en">getId</span>() {
+        <span class="pl-k">return</span> id;
+    }
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * Declare which method to call in order to load the data backing this </span>
+<span class="pl-c">     * method using @LazyLoadWith</span>
+<span class="pl-c">     */</span>
+    <span class="pl-st">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadData<span class="pl-pds">"</span></span>)
+    <span class="pl-s">public</span> <span class="pl-stj">String</span> <span class="pl-en">getName</span>() {
+        <span class="pl-k">return</span> name;
+    }
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * Any method can be annotated; it doesn't have to be a JavaBean getter</span>
+<span class="pl-c">     */</span>
+    <span class="pl-st">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadData<span class="pl-pds">"</span></span>)
+    <span class="pl-s">public</span> <span class="pl-stj">String</span> <span class="pl-en">tellMeAboutIt</span>() {
+        <span class="pl-k">return</span> description;
+    }
+
+    <span class="pl-c">/*</span>
+<span class="pl-c">     * The loader method can be private, but must have no parameters</span>
+<span class="pl-c">     */</span>
+    <span class="pl-s">private</span> <span class="pl-st">void</span> <span class="pl-en">loadData</span>() {
+        <span class="pl-c">// Do something expensive, like a big calculation or read from an</span>
+        <span class="pl-c">// external source</span>
+    }
+}</pre></div>
 
 <p>You could then use an instance of it like so:</p>
 
-<div class="highlight highlight-java"><pre><span class="pl-c"><span class="pl-pdc">//</span> For classes with declared null constructors, the convenience override</span>
-<span class="pl-c"><span class="pl-pdc">//</span> LazyFactory.proxy(SimpleClass.class) override can be used. Classes with</span>
-<span class="pl-c"><span class="pl-pdc">//</span> constructors that take parameters must pass an original object to </span>
-<span class="pl-c"><span class="pl-pdc">//</span> lazy-load, however.</span>
-<span class="pl-s">DataClass</span> dataClass <span class="pl-ko">=</span> <span class="pl-s">LazyFactory</span><span class="pl-ko">.</span>proxy(<span class="pl-k">new</span> <span class="pl-s">DataClass</span>(<span class="pl-cn">123</span>));
+<div class="highlight highlight-java"><pre><span class="pl-c">// For classes with declared null constructors, the convenience override</span>
+<span class="pl-c">// LazyFactory.proxy(SimpleClass.class) override can be used. Classes with</span>
+<span class="pl-c">// constructors that take parameters must pass an original object to </span>
+<span class="pl-c">// lazy-load, however.</span>
+<span class="pl-stj">DataClass</span> dataClass <span class="pl-k">=</span> <span class="pl-stj">LazyFactory</span><span class="pl-k">.</span>proxy(<span class="pl-k">new</span> <span class="pl-stj">DataClass</span>(<span class="pl-c1">123</span>));
 
-<span class="pl-c"><span class="pl-pdc">//</span> No lazy loading done here</span>
-<span class="pl-s">int</span> id <span class="pl-ko">=</span> dataClass<span class="pl-ko">.</span>getId();
+<span class="pl-c">// No lazy loading done here</span>
+<span class="pl-st">int</span> id <span class="pl-k">=</span> dataClass<span class="pl-k">.</span>getId();
 
-<span class="pl-c"><span class="pl-pdc">//</span> Lazy loading done here (i.e. loadData is called)</span>
-<span class="pl-s">String</span> name <span class="pl-ko">=</span> dataClass<span class="pl-ko">.</span>getName();
+<span class="pl-c">// Lazy loading done here (i.e. loadData is called)</span>
+<span class="pl-stj">String</span> name <span class="pl-k">=</span> dataClass<span class="pl-k">.</span>getName();
 
-<span class="pl-c"><span class="pl-pdc">//</span> But no loading done here, as it's already happened</span>
-dataClass<span class="pl-ko">.</span>getName();
+<span class="pl-c">// But no loading done here, as it's already happened</span>
+dataClass<span class="pl-k">.</span>getName();
 
-<span class="pl-c"><span class="pl-pdc">//</span> Or here - boneidle knows both methods share the same loader</span>
-<span class="pl-s">String</span> description <span class="pl-ko">=</span> dataClass<span class="pl-ko">.</span>tellMeAboutIt();</pre></div>
+<span class="pl-c">// Or here - boneidle knows both methods share the same loader</span>
+<span class="pl-stj">String</span> description <span class="pl-k">=</span> dataClass<span class="pl-k">.</span>tellMeAboutIt();</pre></div>
 
 <p>If all your methods are loaded by the same method, you can put the <code>@LazyLoadWith</code> annotation on the class. Applying
 the <code>@LazyLoadWith</code> annotation to a method on a type annotated at the class level will override the class loader, whilst
 applying the <code>@ExcludeFromLazyLoading</code> will prevent any lazy-loader from being called for that method:</p>
 
 <div class="highlight highlight-java"><pre>@LazyLoadWith(<span class="pl-s1"><span class="pl-pds">"</span>loadDataForClass<span class="pl-pds">"</span></span>)
-<span class="pl-mc"><span class="pl-mc"><span class="pl-s">class</span> <span class="pl-entc">DataClassWithDefaultLoader</span></span> <span class="pl-mc">{</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">int</span> id;</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">String</span> name;</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">String</span> description;</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span> This won't be lazy loaded - the method will be invoked as written <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">@ExcludeFromLazyLoading</span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">int</span> <span class="pl-enf">getId</span>() { <span class="pl-cn">...</span> }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span> This will be lazy loaded using the class's default loader <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">String</span> <span class="pl-enf">getName</span>() { <span class="pl-cn">...</span> }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-c"><span class="pl-pdc">/*</span> This will be lazy loaded using the loader specified on the method <span class="pl-pdc">*/</span></span></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadDataForDescription<span class="pl-pds">"</span></span>)</span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">public</span> <span class="pl-s">String</span> <span class="pl-enf">getDescription</span>() { <span class="pl-cn">...</span> }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">void</span> <span class="pl-enf">loadDataForClass</span>() { <span class="pl-cn">...</span> }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span></span>
-<span class="pl-mc"><span class="pl-mc">    <span class="pl-s">private</span> <span class="pl-s">void</span> <span class="pl-enf">loadDataForDescription</span>() { <span class="pl-cn">...</span> }</span></span>
-<span class="pl-mc"><span class="pl-mc"></span>}</span></pre></div>
+<span class="pl-s">class</span> <span class="pl-en">DataClassWithDefaultLoader</span> {
+    <span class="pl-s">private</span> <span class="pl-st">int</span> id;
+    <span class="pl-s">private</span> <span class="pl-stj">String</span> name;
+    <span class="pl-s">private</span> <span class="pl-stj">String</span> description;
+
+    <span class="pl-c">/* This won't be lazy loaded - the method will be invoked as written */</span>
+    <span class="pl-st">@ExcludeFromLazyLoading</span>
+    <span class="pl-s">public</span> <span class="pl-st">int</span> <span class="pl-en">getId</span>() { <span class="pl-c1">...</span> }
+
+    <span class="pl-c">/* This will be lazy loaded using the class's default loader */</span>
+    <span class="pl-s">public</span> <span class="pl-stj">String</span> <span class="pl-en">getName</span>() { <span class="pl-c1">...</span> }
+
+    <span class="pl-c">/* This will be lazy loaded using the loader specified on the method */</span>
+    <span class="pl-st">@LazyLoadWith</span>(<span class="pl-s1"><span class="pl-pds">"</span>loadDataForDescription<span class="pl-pds">"</span></span>)
+    <span class="pl-s">public</span> <span class="pl-stj">String</span> <span class="pl-en">getDescription</span>() { <span class="pl-c1">...</span> }
+
+    <span class="pl-s">private</span> <span class="pl-st">void</span> <span class="pl-en">loadDataForClass</span>() { <span class="pl-c1">...</span> }
+
+    <span class="pl-s">private</span> <span class="pl-st">void</span> <span class="pl-en">loadDataForDescription</span>() { <span class="pl-c1">...</span> }
+}</pre></div>
+
+<h2>
+<a id="where-do-i-get-it" class="anchor" href="#where-do-i-get-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Where do I get it?</h2>
+
+<p><a href="http://search.maven.org/#artifactdetails%7Cio.boneidle%7Cboneidle-core%7C1.0.0%7Cjar">Maven Central</a>. You can add a dependency to your project like this:</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;io.boneidle&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;boneidle-core&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;1.0.0&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<p>There are two artifacts to be aware of:</p>
+
+<ul>
+<li>
+<strong>boneidle-annotations</strong> which contains <em>only</em> the annotation classes, for use with marking up a class for lazy loading</li>
+<li>
+<strong>boneidle-core</strong> which includes boneidle-annotations <em>plus</em> the classes needing for generating lazy-loading proxies.</li>
+</ul>
+
+<p>If you're not sure which you want, use boneidle-core; boneidle-annotations is intended for use with library modules/projects that define lazily loaded classes, but don't actually make use of them.</p>
 
 <h2>
 <a id="whats-the-catch" class="anchor" href="#whats-the-catch" aria-hidden="true"><span class="octicon octicon-link"></span></a>What's the catch?</h2>
