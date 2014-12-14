@@ -29,6 +29,9 @@ There are two artifacts to be aware of:
 
 If you're not sure which you want, use boneidle-core; boneidle-annotations is intended for use with library modules/projects that define lazily loaded classes, but don't actually make use of them.
 
+## Versioning
+Version numbers follow the Semantic Versioning ([semver.org](http://semver.org/)) convention.
+
 ## Potential future improvements
 Ways in which boneidle could be even better include:
 
