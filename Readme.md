@@ -2,6 +2,7 @@ boneidle
 ========
 **Annotation-driven lazy-loading for people too bone idle to write it themselves**
 
+## What is it?
 Got a bunch of data you want to load in to your class just once, but don't want to write all those tedious ifs yourself?
 Don't worry, boneidle has got you covered with these three easy steps:
 
@@ -9,117 +10,26 @@ Don't worry, boneidle has got you covered with these three easy steps:
 2. Annotate the lazy-loaded getters with `@LazyLoadWith` (or any other method you want to trigger the loader). Annotate the class to make all methods lazily-loaded by default.
 3. Create your lazy-loading proxy with `LazyFactory.proxy()`
 
-Examples
---------
-Suppose you have a data holder class that looks like:
+For more information see [boneidle.io](http://boneidle.io).
 
-```java
-public class DataClass {
-    private int id;
-    private String name;
-    private String description;
+## How do I install it?
+Boneidle is [available from Maven Central](http://search.maven.org/#artifactdetails%7Cio.boneidle%7Cboneidle-core%7C1.0.0%7Cjar). You can add a dependency to your project like this:
 
-    /*
-     * Constructors that take arguments, or are even inaccessible, are fine
-     */
-    private DataClass(int id) {
-        this.id = id;
-    }
-
-    /*
-     * Un-annotated methods are left alone, so you can mix lazy and eager loaded data
-     */
-    public int getId() {
-        return id;
-    }
-
-    /*
-     * Declare which method to call in order to load the data backing this method
-     * using @LazyLoadWith
-     */
-    @LazyLoadWith("loadData")
-    public String getName() {
-        return name;
-    }
-
-    /*
-     * Any method can be annotated; it doesn't have to be a JavaBean getter
-     */
-    @LazyLoadWith("loadData")
-    public String tellMeAboutIt() {
-        return description;
-    }
-
-    /*
-     * The loader method can be private, but must have no parameters
-     */
-    private void loadData() {
-        // Do something expensive, like a big calculation or read from an external
-        // source
-    }
-}
+```xml
+<dependency>
+    <groupId>io.boneidle</groupId>
+    <artifactId>boneidle-core</artifactId>
+    <version>1.0.0</version>
+</dependency>
 ```
 
-You could then use an instance of it like so:
+There are two artifacts to be aware of:
+- **boneidle-annotations** which contains _only_ the annotation classes, for use with marking up a class for lazy loading
+- **boneidle-core** which includes boneidle-annotations _plus_ the classes needing for generating lazy-loading proxies.
 
-```java
-// For classes with declared null constructors, the convenience override
-// LazyFactory.proxy(SimpleClass.class) override can be used. Classes with
-// constructors that take parameters must pass an original object to lazy-load,
-// however.
-DataClass dataClass = LazyFactory.proxy(new DataClass(123));
+If you're not sure which you want, use boneidle-core; boneidle-annotations is intended for use with library modules/projects that define lazily loaded classes, but don't actually make use of them.
 
-// No lazy loading done here
-int id = dataClass.getId();
-
-// Lazy loading done here (i.e. loadData is called)
-String name = dataClass.getName();
-
-// But no loading done here, as it's already happened
-dataClass.getName();
-
-// Or here - boneidle knows both methods share the same loader
-String description = dataClass.tellMeAboutIt();
-```
-
-If all your methods are loaded by the same method, you can put the `@LazyLoadWith` annotation on the class. Applying
-the `@LazyLoadWith` annotation to a method on a type annotated at the class level will override the class loader, whilst
-applying the `@ExcludeFromLazyLoading` will prevent any lazy-loader from being called for that method:
-
-```java
-@LazyLoadWith("loadDataForClass")
-class DataClassWithDefaultLoader {
-    private int id;
-    private String name;
-    private String description;
-
-    /* This will not be lazy loaded - the method will be invoked as written */
-    @ExcludeFromLazyLoading
-    public int getId() { ... }
-
-    /* This will be lazy loaded using the class's default loader */
-    public String getName() { ... }
-
-    /* This will be lazy loaded using the loader specified on the method */
-    @LazyLoadWith("loadDataForDescription")
-    public String getDescription() { ... }
-
-    private void loadDataForClass() { ... }
-
-    private void loadDataForDescription() { ... }
-}
-```
-
-Restrictions
-------------
-Since boneidle is powered by CGLIB proxies, there are one or two restrictions:
-
-* The annotated class must not be final
-* Lazy-loaded data must always be retrieved through the annotated methods, even within the annotated class; accessing
-the fields directly won't trigger any lazy loading
-
-Potential future improvements
------------------------------
+## Potential future improvements
 Ways in which boneidle could be even better include:
 
 * Smarter / configurable strategies for deciding when data needs to be loaded. For example:
@@ -128,5 +38,4 @@ Ways in which boneidle could be even better include:
  * If the field backing the bean getter is not null (for bean getters only, obviously)
 * Extend support for `@LazyLoadWith` on the class:
  * Perhaps add different inclusion filters (e.g. all methods, only public methods, only getter methods)
-* Publish to Maven Central
 * Build on Travis (or similar)
